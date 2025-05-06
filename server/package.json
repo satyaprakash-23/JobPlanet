@@ -1,0 +1,31 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Creating the backend for job portal project",
+  "main": "index.js",
+  "scripts": {
+    "test": "jist",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/satyaprakash-23/JobPlanet.git"
+  },
+  "keywords": [
+    "mongoose",
+    "react",
+    "express",
+    "node"
+  ],
+  "author": "Satya Prakash",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/satyaprakash-23/JobPlanet/issues"
+  },
+  "homepage": "https://github.com/satyaprakash-23/JobPlanet#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "mongoose": "^8.14.1"
+  }
+}
