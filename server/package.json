@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/satyaprakash-23/JobPlanet#readme",
   "dependencies": {
+    "cloudinary": "^2.6.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "mongoose": "^8.14.1",
