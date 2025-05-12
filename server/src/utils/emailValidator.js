@@ -8,12 +8,12 @@ const emailValidator = (email) => {
     return false;
   }
 
-  // Local part (before @)
+  
   if (!/^[A-Za-z0-9._%+-]+$/.test(parts[0])) {
     return false;
   }
 
-  // Domain part (after @)
+
   if (!/^[A-Za-z0-9.-]+$/.test(parts[1])) {
     return false;
   }
@@ -28,3 +28,5 @@ const emailValidator = (email) => {
 };
 
 export default emailValidator;
+
+
