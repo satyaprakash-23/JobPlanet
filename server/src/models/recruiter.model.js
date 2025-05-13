@@ -47,7 +47,7 @@ const recruiterSchema = new Schema({
     type: String,
     required: true,
     minLength: 8,
-    maxLength: 30,
+    maxLength: 100,
     validate(value) {
       if (
         !/[A-Z]/.test(value) ||
@@ -73,7 +73,7 @@ const recruiterSchema = new Schema({
 recruiterSchema.pre("save", async function (next) {
   const user = this;
   if (!user.isModified("password")) return next();
-  user.password = await bcrypt.hash(user.password,10);
+  user.password = await bcrypt.hash(user.password, 10);
   next();
 });
 

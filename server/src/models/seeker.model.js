@@ -46,7 +46,7 @@ const seekerSchema = new Schema({
     type: String,
     required: true,
     minLength: 8,
-    maxLength: 30,
+    maxLength: 100,
     validate(value) {
       if (
         !/[A-Z]/.test(value) ||
@@ -87,28 +87,29 @@ const seekerSchema = new Schema({
   refreshToken: {
     type: String,
   },
-  collegeName : {
-    type : String,
-    lowercase : true,
-    trim : true,
-    maxLength : 100,
-    validate(value){
-      if(!/^[A-Za-z0-9\s.]+$/.test(value)){
-        throw new Error("College name must contain character and number only")
+  collegeName: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    maxLength: 100,
+    validate(value) {
+      if (!/^[A-Za-z0-9\s.]+$/.test(value)) {
+        throw new Error("College name must contain character and number only");
       }
-    }
+    },
   },
-  passingYear : {
-    type : Number,
-    
-  }
+  passingYear: {
+    type: Number,
+  },
 });
 
 seekerSchema.index(
-  { phoneNumber: 1 },  // index key pattern
-  { unique: true, partialFilterExpression: { phoneNumber: { $exists: true, $ne: null } } }  // options
-)
-
+  { phoneNumber: 1 }, // index key pattern
+  {
+    unique: true,
+    partialFilterExpression: { phoneNumber: { $exists: true, $ne: null } },
+  } // options
+);
 
 //the .pre("save") middleware will run when saving the data for the first time (during document creation) as well as on subsequent updates.
 seekerSchema.pre("save", async function (next) {
