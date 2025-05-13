@@ -2,8 +2,10 @@ const express = require("express");
 const multer = require("multer");
 const cors = require("cors");
 const connectDB = require("./config/database");
-const upload = require("./middlewares/multer.middleware")
+
 const {uploadOnCloudinary} =  require("./utils/cloudinary.js")
+const authRoute = require("./routes/auth.js")
+
 
 const app = express();
 
@@ -14,20 +16,22 @@ app.use(cors());
 app.use(express.json());
 
 // File upload route
-app.post("/profile", upload.single("image"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).send("No file uploaded");
-  }
+// app.post("/profile", upload.single("image"), (req, res) => {
+//   if (!req.file) {
+//     return res.status(400).send("No file uploaded");
+//   }
   
-  console.log("File details:", req.file);
-  console.log("Form data:", req.body);
-  console.log(req.path);
+//   console.log("File details:", req.file);
+//   console.log("Form data:", req.body);
+//   console.log(req.path);
   
-  uploadOnCloudinary(req.file.path)
+//   uploadOnCloudinary(req.file.path)
   
-  // Send back file information to client
-  res.json(req.file);
-});
+//   // Send back file information to client
+//   res.json(req.file);
+// });
+
+app.use("/",authRoute)
 
 // Start server after connecting to database
 connectDB()

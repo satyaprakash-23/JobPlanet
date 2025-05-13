@@ -27,6 +27,6 @@ const emailValidator = (email) => {
   return true;
 };
 
-export default emailValidator;
+module.exports =  emailValidator;
 
 

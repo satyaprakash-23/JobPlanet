@@ -36,7 +36,6 @@ const seekerSchema = new Schema({
 
   phoneNumber: {
     type: String,
-    unique: true,
     validate(value) {
       if (!/^[0-9]{10}$/.test(value)) {
         throw new Error("Phone number must be 10 digits");
@@ -105,6 +104,13 @@ const seekerSchema = new Schema({
   }
 });
 
+seekerSchema.index(
+  { phoneNumber: 1 },  // index key pattern
+  { unique: true, partialFilterExpression: { phoneNumber: { $exists: true, $ne: null } } }  // options
+)
+
+
+//the .pre("save") middleware will run when saving the data for the first time (during document creation) as well as on subsequent updates.
 seekerSchema.pre("save", async function (next) {
   const user = this;
   if (!user.isModified("password")) {
