@@ -1,17 +1,18 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const emailValidator  = require("../utils/emailValidator");
-
+const emailValidator = require("../utils/emailValidator");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const recruiterSchema = new Schema({
-  name: {
+  fullName: {
     type: String,
     required: true,
     maxLength: 25,
     lowercase: true,
     trim: true,
     validate(value) {
-      if (!/^[A-Za-z]+$/.test(value)) {
+      if (!/^[A-Za-z\s.'-]+$/.test(value)) {
         throw new Error("Name should contain only letters");
       }
     },
@@ -64,8 +65,41 @@ const recruiterSchema = new Schema({
     type: String, //cloudinary url
     required: true,
   },
+  refreshToken: {
+    type: String,
+  },
 });
 
-const Recruiter = mongoose.model("Recruiter",recruiterSchema)
+recruiterSchema.pre("save", async function (next) {
+  const user = this;
+  if (!user.isModified("password")) return next();
+  user.password = await bcrypt.hash(user.password,10);
+  next();
+});
 
-module.exports = Recruiter
+recruiterSchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
+recruiterSchema.methods.generateAccessToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      email: this.email,
+      fullName: this.fullName,
+      phoneNumber: this.phoneNumber,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+  );
+};
+
+recruiterSchema.methods.generateRefreshToken = function () {
+  return jwt.sign({ _id: this._id }, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+  });
+};
+
+const Recruiter = mongoose.model("Recruiter", recruiterSchema);
+
+module.exports = Recruiter;

@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const emailValidator = require("../utils/emailValidator");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const seekerSchema = new Schema({
-  name: {
+  fullName: {
     type: String,
     required: true,
     minLength: 2,
@@ -11,7 +13,7 @@ const seekerSchema = new Schema({
     lowercase: true,
     trim: true,
     validate(value) {
-      if (!/^[A-Za-z]+$/.test(value)) {
+      if (!/^[A-Za-z\s.'-]+$/.test(value)) {
         throw new Error("Name should contain only letters");
       }
     },
@@ -37,7 +39,7 @@ const seekerSchema = new Schema({
     unique: true,
     validate(value) {
       if (!/^[0-9]{10}$/.test(value)) {
-        throw new Error("Invalid phone number");
+        throw new Error("Phone number must be 10 digits");
       }
     },
   },
@@ -83,7 +85,64 @@ const seekerSchema = new Schema({
     type: String,
     maxLength: 200,
   },
+  refreshToken: {
+    type: String,
+  },
+  collegeName : {
+    type : String,
+    lowercase : true,
+    trim : true,
+    maxLength : 100,
+    validate(value){
+      if(!/^[A-Za-z0-9\s.]+$/.test(value)){
+        throw new Error("College name must contain character and number only")
+      }
+    }
+  },
+  passingYear : {
+    type : Number,
+    
+  }
 });
+
+seekerSchema.pre("save", async function (next) {
+  const user = this;
+  if (!user.isModified("password")) {
+    return next();
+  }
+  user.password = await bcrypt.hash(user.password, 10);
+  next();
+});
+
+seekerSchema.methods.isPasswordCorrect = async function (password) {
+  const user = this;
+  return await bcrypt.compare(password, user.password);
+};
+
+seekerSchema.methods.generateAccessToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      email: this.email,
+      phoneNumber: this.phoneNumber,
+      fullName: this.fullName,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+  );
+};
+
+seekerSchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+    }
+  );
+};
 
 const Seeker = mongoose.model("Seeker", seekerSchema);
 
