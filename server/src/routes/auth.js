@@ -93,7 +93,7 @@ authRoute.post("/login/seeker", async (req, res) => {
     seeker.refreshToken = refreshToken;
     await seeker.save();
     res.cookie("accessToken", accessToken);
-    res.json({ message: "Seeker logged in successfully" });
+    res.json({ message: "Seeker logged in successfully" , seeker });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

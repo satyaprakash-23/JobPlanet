@@ -91,7 +91,7 @@ const seekerSchema = new Schema({
     type: String,
     lowercase: true,
     trim: true,
-    maxLength: 100,
+    maxLength: 200,
     validate(value) {
       if (!/^[A-Za-z0-9\s.]+$/.test(value)) {
         throw new Error("College name must contain character and number only");
