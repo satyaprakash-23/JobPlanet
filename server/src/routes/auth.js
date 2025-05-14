@@ -99,4 +99,6 @@ authRoute.post("/login/seeker", async (req, res) => {
   }
 });
 
+
+
 module.exports = authRoute;

@@ -2,15 +2,19 @@ const express = require("express");
 const multer = require("multer");
 const cors = require("cors");
 const connectDB = require("./config/database");
+const cookieParser = require("cookie-parser");
+
 
 const {uploadOnCloudinary} =  require("./utils/cloudinary.js")
 const authRoute = require("./routes/auth.js")
+const seekerRoute = require("./routes/seeker.js")
 
 
 const app = express();
 
 // Enable CORS middleware
 app.use(cors());
+app.use(cookieParser());
 
 // JSON body parser middleware
 app.use(express.json());
@@ -32,6 +36,7 @@ app.use(express.json());
 // });
 
 app.use("/",authRoute)
+app.use("/",seekerRoute)
 
 // Start server after connecting to database
 connectDB()
