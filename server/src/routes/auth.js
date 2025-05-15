@@ -93,7 +93,35 @@ authRoute.post("/login/seeker", async (req, res) => {
     seeker.refreshToken = refreshToken;
     await seeker.save();
     res.cookie("accessToken", accessToken);
-    res.json({ message: "Seeker logged in successfully" , seeker });
+    res.json({ message: "Seeker logged in successfully", seeker });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+authRoute.post("/login/recruiter", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      throw new Error("Enter the credentials");
+    }
+    const recruiter = await Recruiter.findOne({ email });
+    if (!recruiter) {
+      throw new Error("Enter the correct credentials");
+    }
+    const isPasswordCorrect = await recruiter.isPasswordCorrect(password);
+    if (!isPasswordCorrect) {
+      throw new Error("Enter the correct credentials");
+    }
+    const accessToken = recruiter.generateAccessToken();
+    const refreshToken = recruiter.generateRefreshToken();
+    res.cookie("accessToken", accessToken);
+    recruiter.refreshToken = refreshToken;
+    await recruiter.save();
+    res.json({
+      message: `${recruiter.fullName} loggedIn successfully`,
+      recruiter,
+    });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

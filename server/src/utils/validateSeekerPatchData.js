@@ -1,4 +1,7 @@
+const { stack } = require("../routes/seeker");
+
 const validateSeekerPatchData = (req) => {
+
   const allowedUpdate = [
     "fullName",
     "phoneNumber",
@@ -9,9 +12,11 @@ const validateSeekerPatchData = (req) => {
     "passingYear",
   ];
 
-  const keys = Object.keys(req.body);
+  const keys = Object.keys(req);
+  
   const isUpdateValid = keys.every((key) => allowedUpdate.includes(key));
-
+  console.log(isUpdateValid + "satay") ;
+  
   if (!isUpdateValid) {
     throw new Error("Invalid Edit Request: contains fields not allowed.");
   }
@@ -23,14 +28,16 @@ const validateSeekerPatchData = (req) => {
     skills = [],
     bio,
     collegeName,
-  } = req.body;
+  } = req;
+  
+  
 
   if (fullName && !/^[A-Za-z\s.'-]+$/.test(fullName)) {
     throw new Error(
       "Full name should only contain letters and valid characters."
     );
   }
-
+ 
   if (phoneNumber && !/^[0-9]{10}$/.test(phoneNumber)) {
     throw new Error("Phone number must be exactly 10 digits.");
   }
