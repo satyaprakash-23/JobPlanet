@@ -1,0 +1,25 @@
+const validateRecruiterPatchData = (fields) => {
+  const allowedUpdate = ["fullName,phoneNumber"];
+
+  const isUpdateValid = Object.keys(fields).every((key) =>
+    allowedUpdate.includes(key)
+  );
+
+  if (!isUpdateValid) {
+    throw new Error("Edit is not valid");
+  }
+
+  const { fullName, phoneNumber } = fields;
+
+  if (fullName && !/^[A-Za-z\s.'-]+$/.test(fullName)) {
+    throw new Error(
+      "Name can contain only letters, spaces, and characters like .' -"
+    );
+  }
+
+  if (phoneNumber && !/^[0-9]{10}$/.test(phoneNumber)) {
+    throw new Error("Phone number must contain exactly 10 digits");
+  }
+};
+
+module.exports = validateRecruiterPatchData;

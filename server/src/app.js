@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 const {uploadOnCloudinary} =  require("./utils/cloudinary.js")
 const authRoute = require("./routes/auth.js")
 const seekerRoute = require("./routes/seeker.js")
+const recruiterRoute = require("./routes/recuiter.js")
 
 
 const app = express();
@@ -37,6 +38,7 @@ app.use(express.json());
 
 app.use("/",authRoute)
 app.use("/",seekerRoute)
+app.use("/",recruiterRoute)
 
 // Start server after connecting to database
 connectDB()
